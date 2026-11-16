@@ -43,8 +43,8 @@ export class PowerflowCard extends HTMLElement {
     this._context = context;
     this._update();
   }
-  getCardSize() { return 12; }
-  getGridOptions() { return {columns:12,min_columns:9,rows:12,min_rows:8}; }
+  getCardSize() { return Math.ceil((this.shadowRoot.querySelector('ha-card')?.offsetHeight || 900) / 50); }
+  getGridOptions() { return {columns:12,min_columns:9,rows:'auto'}; }
   _create() {
     const node = (kind,label,icon,color) => `<button type="button" class="pf-node pf-${kind}" data-node="${kind}" style="--node-color:${color}"><div class="pf-icon"><ha-icon icon="mdi:${icon}"></ha-icon></div><span>${label}</span><strong data-value="${kind}"></strong><span class="pf-soc" data-value="soc-node" ${kind==='battery'?'':'hidden'}></span><small data-value="${kind}-status"></small></button>`;
     const daily = (key,label) => `<div data-optional="${key}"><span>${label}</span><strong data-value="${key}"></strong></div>`;
@@ -54,7 +54,7 @@ export class PowerflowCard extends HTMLElement {
       <div class="pf-diagram"><svg viewBox="0 0 400 320" preserveAspectRatio="none" role="img" aria-label="Live power flows from sources to destinations">${ROUTES.map(([key,path,color])=>`<g data-route="${key}" style="--route-color:${{solar:'#dfa32b',grid:'#9374cf',battery:'#249e84'}[color]}"><title></title><path class="pf-track" d="${path}"/><path class="pf-flow" d="${path}" style="stroke:var(--route-color)"/></g>`).join('')}</svg>
         ${node('solar','Solar','solar-power-variant','#c48712')}${node('grid','Grid','transmission-tower','#8266d0')}${node('home','Home','home-lightning-bolt','#3796d4')}${node('battery','Battery','battery','#159b7c')}
       </div>
-      <div data-group="battery"><div class="pf-battery-bar"><span data-value="soc"></span><span data-value="runtime"></span></div><div class="pf-charge-track" role="progressbar" aria-label="Battery percentage" aria-valuemin="0" aria-valuemax="100"><div></div></div></div>
+      <div class="pf-battery-runtime" data-group="battery"><span>Battery runtime at current demand</span><strong data-value="runtime"></strong></div>
       <section data-group="daily"><div class="pf-section-head"><strong>Today so far</strong><span>Energy</span></div><div class="pf-daily">${daily('daily_generation','Generated')}${daily('daily_import','Imported')}${daily('daily_export','Exported')}</div></section>
       <div class="pf-insights" data-group="insights"><div data-optional="electricity_cost"><span>Electricity today</span><strong data-value="cost"></strong><small>Your net electricity cost</small></div><div data-optional="forecast_tomorrow"><span>Tomorrow’s solar</span><strong data-value="forecast_tomorrow"></strong><small>Generation forecast</small></div></div>
       <div class="pf-backup" data-optional="backup"><ha-icon icon="mdi:shield-home-outline"></ha-icon><span>Backup load</span><strong data-value="backup"></strong></div>
@@ -79,7 +79,7 @@ export class PowerflowCard extends HTMLElement {
     hide('[data-node="solar"]',!e.solar);
     hide('[data-node="grid"]',!e.grid_import && !e.grid_export);
     hide('[data-node="battery"]',!e.battery_charge && !e.battery_discharge && !e.battery_soc);
-    hide('[data-group="battery"]',!e.battery_soc && !e.battery_runtime);
+    hide('[data-group="battery"]',!e.battery_runtime);
     hide('[data-group="daily"]',!c.show_daily || !['daily_generation','daily_import','daily_export'].some(key=>e[key]));
     hide('[data-group="insights"]',!e.electricity_cost && (!c.show_forecast || !e.forecast_tomorrow));
     this.shadowRoot.querySelectorAll('[data-optional]').forEach(el=>{el.hidden = !e[el.dataset.optional] || (el.dataset.optional==='forecast_tomorrow' && !c.show_forecast);});
@@ -100,12 +100,8 @@ export class PowerflowCard extends HTMLElement {
     text('battery',formatPower(m.batteryValue));text('battery-status',m.batteryStatus);
     text('soc-node',m.soc===null?'—%':`${Math.round(m.soc)}%`);
     this._els['soc-node'].hidden = !this._config.entities.battery_soc;
-    text('soc',m.soc===null?'Charge level unavailable':`${Math.round(m.soc)}% remaining`);
     text('runtime',m.runtime);
-    const meter = this.shadowRoot.querySelector('[role="progressbar"]');
-    meter.firstElementChild.style.width = `${m.soc ?? 0}%`;
-    if (m.soc===null) { meter.removeAttribute('aria-valuenow'); meter.setAttribute('aria-valuetext','Unavailable'); }
-    else { meter.setAttribute('aria-valuenow',String(m.soc)); meter.removeAttribute('aria-valuetext'); }
+    this.shadowRoot.querySelector('[data-group="battery"]').hidden = !this._config.entities.battery_runtime || !(m.values.battery_discharge > this._config.flow_threshold);
     for (const [key,value] of Object.entries(m.energy)) text(key,value);
     text('cost',m.cost);text('backup',formatPower(m.values.backup));
     text('charge-window',`${m.times.charge_start}–${m.times.charge_end}`);text('discharge-window',`${m.times.discharge_start}–${m.times.discharge_end}`);

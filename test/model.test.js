@@ -11,6 +11,7 @@ test('validates required entities, threshold, switches and currency',()=>{
   for(const flow_threshold of [-1,NaN,'50']) assert.throws(()=>normalizeConfig({entities:{home:'sensor.home'},flow_threshold}),/threshold/);
   assert.throws(()=>normalizeConfig({entities:{home:'sensor.home'},show_daily:'false'}),/true or false/);
   assert.throws(()=>normalizeConfig({entities:{home:'sensor.home'},currency:'£'}),/currency/);
+  assert.equal(normalizeConfig({entities:{home:'sensor.home'},currency:''}).currency,undefined);
 });
 test('normalises power and energy units without treating unavailable data as zero',()=>{
   assert.equal(scaledState(state(.594,'kW'),'power'),594);

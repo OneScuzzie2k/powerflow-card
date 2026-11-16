@@ -1,6 +1,6 @@
 {
   "name": "powerflow-card",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Standalone Home Assistant energy flow card with battery percentage, forecasts and daily totals.",
   "type": "module",
   "private": true,

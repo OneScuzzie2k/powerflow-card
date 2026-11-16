@@ -8,7 +8,7 @@ export class PowerflowCardEditor extends HTMLElement {
     this._form.computeLabel = schema => schema.label || schema.name;
     this._form.schema = [
       { name:'title', label:'Title', selector:{text:{}} },
-      { name:'entities', label:'Energy sensors (home power is required)', type:'expandable', expanded:true, schema:Object.entries(ENTITY_LABELS).map(([name,label])=>({name,label,required:name==='home',selector:{entity:{}}})) },
+      { name:'entities', title:'Energy sensors (home power is required)', label:'Energy sensors (home power is required)', type:'expandable', expanded:true, schema:Object.entries(ENTITY_LABELS).map(([name,label])=>({name,label,required:name==='home',selector:{entity:{domain:name.includes('start')||name.includes('end')?['time','input_datetime','sensor']:['sensor','input_number','number']}}})) },
       { name:'flow_threshold', label:'Minimum animated flow (W)', selector:{number:{min:0,max:1000,mode:'box'}} },
       { name:'currency', label:'Currency code (optional, for example GBP)', selector:{text:{}} },
       ...['daily','forecast','schedule'].map(key=>({name:`show_${key}`,label:`Show ${key}`,selector:{boolean:{}}}))

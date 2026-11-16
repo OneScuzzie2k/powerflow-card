@@ -23,8 +23,8 @@ export function normalizeConfig(config) {
   if (typeof threshold !== 'number' || !Number.isFinite(threshold) || threshold < 0) throw new Error('flow_threshold must be a non-negative number in watts.');
   for (const key of ['show_daily', 'show_forecast', 'show_schedule']) if (config[key] != null && typeof config[key] !== 'boolean') throw new Error(`${key} must be true or false.`);
   if (config.title != null && typeof config.title !== 'string') throw new Error('title must be text.');
-  if (config.currency != null && (typeof config.currency !== 'string' || !/^[A-Z]{3}$/.test(config.currency))) throw new Error('currency must be a three-letter code such as GBP.');
-  return { ...config, title: config.title ?? 'Power at a glance', entities, flow_threshold: threshold, show_daily: config.show_daily ?? true, show_forecast: config.show_forecast ?? true, show_schedule: config.show_schedule ?? true };
+  if (config.currency != null && config.currency !== '' && (typeof config.currency !== 'string' || !/^[A-Z]{3}$/.test(config.currency))) throw new Error('currency must be a three-letter code such as GBP.');
+  return { ...config, title: config.title ?? 'Power at a glance', currency:config.currency || undefined, entities, flow_threshold: threshold, show_daily: config.show_daily ?? true, show_forecast: config.show_forecast ?? true, show_schedule: config.show_schedule ?? true };
 }
 
 export function numberState(state) {

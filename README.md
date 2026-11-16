@@ -1,6 +1,6 @@
 # Powerflow Card
 
-A standalone Home Assistant Lovelace card for solar, grid, battery and home energy. Battery percentage is displayed **inside the battery node**, alongside charging/discharging power and status.
+A standalone Home Assistant Lovelace card for solar, grid, battery and home energy. Battery percentage is displayed **inside the battery node**, alongside charging/discharging power and status. There is no duplicate battery bar; the optional runtime estimate sits below the flow diagram.
 
 No Button-Card, card-mod, external fonts, CDNs or other frontend dependencies are required. The card does not call services or change inverter settings. Selecting a node opens Home Assistant's entity history/details.
 
