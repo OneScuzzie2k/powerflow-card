@@ -1,0 +1,14 @@
+{
+  "name": "powerflow-card",
+  "version": "0.1.0",
+  "description": "Standalone Home Assistant energy flow card with battery percentage, forecasts and daily totals.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "check": "node --check dist/powerflow-card.js"
+  },
+  "engines": { "node": ">=20" }
+}

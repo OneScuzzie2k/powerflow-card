@@ -1,0 +1,30 @@
+type: custom:powerflow-card
+title: Power at a glance
+currency: GBP
+flow_threshold: 50
+entities:
+  home: sensor.solarman_house_load_power
+  solar: sensor.solar_live_power
+  grid_import: sensor.grid_power_in
+  grid_export: sensor.grid_power_out
+  battery_charge: sensor.battery_power_in
+  battery_discharge: sensor.battery_power_out
+  battery_soc: sensor.solarman_battery
+  battery_runtime: sensor.battery_hours_remaining
+  backup: sensor.solarman_backup_load_power
+  solar_to_home: sensor.solar_to_house
+  solar_to_battery: sensor.solar_to_battery
+  solar_to_grid: sensor.generation_to_grid
+  grid_to_home: sensor.grid_to_house
+  grid_to_battery: sensor.grid_to_battery
+  battery_to_home: sensor.battery_to_house
+  battery_to_grid: sensor.battery_to_grid
+  daily_generation: sensor.solarman_today_production
+  daily_import: sensor.solarman_today_energy_import
+  daily_export: sensor.solarman_today_energy_export
+  electricity_cost: sensor.profit
+  forecast_tomorrow: sensor.solcast_pv_forecast_forecast_tomorrow
+  charge_start: time.solarman_timed_charge_start
+  charge_end: time.solarman_timed_charge_end
+  discharge_start: time.solarman_timed_discharge_start
+  discharge_end: time.solarman_timed_discharge_end

@@ -1,0 +1,8 @@
+node_modules/
+*.zip
+power-flow-live.jpg
+powerflow-card-live.json
+powerflow-card.yaml
+verify-card.py
+preview/
+__pycache__/
